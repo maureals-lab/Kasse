@@ -1,6 +1,6 @@
 {
-  "name": "Spazierclub Kasse",
-  "short_name": "Kasse",
+  "name": "Spazierclub Merch-Kasse",
+  "short_name": "Spazierclub Merch-Kasse",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
