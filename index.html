@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Kasse</title>
+<!-- Icon und Name für „Zum Home-Bildschirm“ (iPhone) und „App installieren“ (Android) -->
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Kasse">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f2f7fc">
+<style>
+  html, body { margin: 0; height: 100%; background: #f2f7fc; font-family: system-ui, -apple-system, sans-serif; color: #14273a; }
+  iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+  .hinweis { padding: 40px 24px; text-align: center; }
+  .hinweis img { width: 96px; border-radius: 22px; }
+  .hinweis a { color: #2775bd; font-weight: 700; }
+</style>
+</head>
+<body>
+<script>
+  // Hier den Link der Kasse eintragen (Apps Script, endet auf /exec)
+  var KASSE_URL = 'https://script.google.com/macros/s/AKfycbzhSTL5rKTMK_OD00Dw7VlEh5ASCyCU4aFC5CwSmGXEsnICPx_ZHGIz2mcMWaLiJo05PQ/exec';
+
+  if (/^https:\/\/script\.google\.com\/.+\/exec/.test(KASSE_URL)) {
+    var f = document.createElement('iframe');
+    f.src = KASSE_URL;
+    f.title = 'Spazierclub Kasse';
+    f.allow = 'camera; clipboard-write';
+    document.body.appendChild(f);
+  } else {
+    document.body.innerHTML = '<div class="hinweis"><img src="apple-touch-icon.png" alt=""><p>In <b>index.html</b> fehlt noch der Link zur Kasse.</p></div>';
+  }
+</script>
+<noscript><div class="hinweis">Bitte JavaScript einschalten.</div></noscript>
+</body>
+</html>
