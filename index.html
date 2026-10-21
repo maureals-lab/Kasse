@@ -30,8 +30,20 @@
     var f = document.createElement('iframe');
     f.src = KASSE_URL;
     f.title = 'Spazierclub Merch-Kasse';
-    f.allow = 'camera; clipboard-write';
+    f.allow = 'camera; clipboard-read; clipboard-write; web-share';
     document.body.appendChild(f);
+    // Teilen-Hilfe: Die Kasse darf das Teilen-Menü vom Handy selbst nicht öffnen und fragt deshalb hier
+    window.addEventListener('message', function (e) {
+      var m = e.data || {};
+      if (m.sc !== 'share' || !/\.googleusercontent\.com$|^https:\/\/script\.google\.com$/.test(e.origin)) return;
+      var answer = function (r) { r.sc = 'share-result'; r.id = m.id; e.source.postMessage(r, e.origin); };
+      if (!navigator.share) { answer({ ok: false }); return; }
+      var data = { title: String(m.title || ''), text: String(m.text || '') };
+      if (/^https:\/\//.test(m.url || '')) data.url = String(m.url);
+      navigator.share(data)
+        .then(function () { answer({ ok: true }); })
+        .catch(function (err) { answer({ ok: false, aborted: !!err && err.name === 'AbortError' }); });
+    });
   } else {
     document.body.innerHTML = '<div class="hinweis"><img src="apple-touch-icon.png" alt=""><p>In <b>index.html</b> fehlt noch der Link zur Kasse.</p></div>';
   }
