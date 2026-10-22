@@ -44,6 +44,21 @@
         .then(function () { answer({ ok: true }); })
         .catch(function (err) { answer({ ok: false, aborted: !!err && err.name === 'AbortError' }); });
     });
+    // Anmeldung sichern: iOS vergisst den Speicher der eingebetteten Kasse manchmal (z. B. nach einem WhatsApp-Link).
+    // Die Kasse legt ihre Anmeldung deshalb zusätzlich hier ab und holt sie beim Start wieder.
+    window.addEventListener('message', function (e) {
+      var m = e.data || {};
+      if ((m.sc !== 'auth-set' && m.sc !== 'auth-get') || !/\.googleusercontent\.com$/.test(e.origin)) return;
+      try {
+        if (m.sc === 'auth-set') {
+          if (m.auth && typeof m.auth.pin === 'string') localStorage.setItem('sc_auth_backup', JSON.stringify(m.auth));
+          else localStorage.removeItem('sc_auth_backup');
+          return;
+        }
+        var saved = JSON.parse(localStorage.getItem('sc_auth_backup') || 'null');
+        e.source.postMessage({ sc: 'auth-result', id: m.id, auth: saved }, e.origin);
+      } catch (err) { e.source.postMessage({ sc: 'auth-result', id: m.id, auth: null }, e.origin); }
+    });
   } else {
     document.body.innerHTML = '<div class="hinweis"><img src="apple-touch-icon.png" alt=""><p>In <b>index.html</b> fehlt noch der Link zur Kasse.</p></div>';
   }
