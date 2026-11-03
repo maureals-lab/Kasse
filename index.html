@@ -44,6 +44,8 @@
         .then(function () { answer({ ok: true }); })
         .catch(function (err) { answer({ ok: false, aborted: !!err && err.name === 'AbortError' }); });
     });
+    // Das Handy bitten, den Speicher der Startseite nicht von selbst zu löschen (sonst ist die Anmeldung weg)
+    try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function () {}); } catch (e) {}
     // Anmeldung sichern: iOS vergisst den Speicher der eingebetteten Kasse manchmal (z. B. nach einem WhatsApp-Link).
     // Die Kasse legt ihre Anmeldung deshalb zusätzlich hier ab und holt sie beim Start wieder.
     window.addEventListener('message', function (e) {
